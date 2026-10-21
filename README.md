@@ -1,6 +1,6 @@
 # Smart Keyboard · NLP Lab 02
 
-Interactive Streamlit next-word prediction with unigrams, bigrams, trigrams, add-k smoothing, hard back-off, and interpolation. Click suggestions to write a sentence and compare held-out results in the Evaluation tab.
+Original instructor-provided Streamlit interface: enter a sentence prefix and view three next-word suggestions with their probabilities. Uses a trigram model with add-k smoothing and hard back-off.
 
 ## Run locally
 
@@ -16,7 +16,7 @@ uv manages dependencies using pyproject.toml and uv.lock. Uvicorn is included as
 
 ## Evaluation
 
-The original fixed document split uses 960 training sentences and 240 held-out test sentences. Both the interface and evaluation train only on training documents. Metrics include EOS as a prediction target. Evaluation generates results/metrics.json, results/failures.txt, and results/ngram_results.png.
+The original fixed document split uses 960 training sentences and 240 held-out test sentences. The evaluation trains only on training documents. The original interface trains on the full corpus, as provided by the instructor. Metrics include EOS as a prediction target. Evaluation generates results/metrics.json, results/failures.txt, and results/ngram_results.png.
 
 The synthetic corpus (seed 42) is far more regular than real English, making perplexities low. Its vocabulary has animal, food, person, place, and object groups. Gold POS tags are included; watch is ambiguous between noun and verb. Results illustrate model behavior, not real-world typing performance.
 
