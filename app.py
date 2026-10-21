@@ -37,7 +37,9 @@ st.title('A little help with your next word.')
 st.write('Start a sentence, explore the predictions, and tap a suggestion to keep writing.')
 keyboard, evaluation, about = st.tabs(['⌨️ Keyboard', '📊 Evaluation', '📖 How it works'])
 with keyboard:
-    st.text_area('Your sentence', value='the happy girls', key='sentence', height=140)
+    if 'sentence' not in st.session_state:
+        st.session_state.sentence = 'the happy girls'
+    st.text_area('Your sentence', key='sentence', height=140)
     words = st.session_state.sentence.lower().replace('.', ' . ').split()
     unknown = sorted({w for w in words if w not in uni.vocab})
     if unknown:
@@ -50,12 +52,12 @@ with keyboard:
     st.subheader('Up next')
     st.caption(f'Using {order} · k = {k} · click a word to append it')
     for col, (word, prob) in zip(st.columns(3), suggestions):
-        col.button('↵ New sentence' if word == EOS else word, key='suggest_' + word, on_click=append_word, args=(word,), use_container_width=True)
+        col.button('↵ New sentence' if word == EOS else word, key='suggest_' + word, on_click=append_word, args=(word,), width='stretch')
         col.caption(f'{prob:.2%} model probability')
     st.divider()
     st.caption('TRY A STARTER')
     for col, example in zip(st.columns(3), ['the cats eat the', 'the teachers', 'the children find']):
-        col.button(example, on_click=set_sentence, args=(example,), use_container_width=True)
+        col.button(example, on_click=set_sentence, args=(example,), width='stretch')
     st.button('Clear sentence', on_click=set_sentence, args=('',))
     st.caption('A tiny synthetic English corpus: these predictions demonstrate n-grams, not general English fluency. Probabilities are model estimates, not renormalized over the three suggestions.')
 with evaluation:
@@ -70,9 +72,9 @@ with evaluation:
         st.caption('Saved evaluation uses the fixed document split and the k values below. Sidebar settings affect the keyboard only. End-of-sentence tokens count as prediction targets.')
         frame = pd.DataFrame(metrics['rows'])
         frame.columns = ['Model', 'Perplexity', 'Zero-probability share', 'Top-3 accuracy']
-        st.dataframe(frame, hide_index=True, use_container_width=True)
+        st.dataframe(frame, hide_index=True, width='stretch')
         st.caption('Accuracy and zero-probability share are fractions from 0 to 1. Lower perplexity and higher accuracy are better. Infinite perplexity means at least one target had zero probability.')
-        st.image(str(ROOT / 'results/ngram_results.png'), use_container_width=True)
+        st.image(str(ROOT / 'results/ngram_results.png'), width='stretch')
         with st.expander('Inspect prediction failures'):
             st.code((ROOT / 'results/failures.txt').read_text(encoding='utf-8'), language=None)
         st.download_button('Download evaluation JSON', raw, 'metrics.json', 'application/json')
